@@ -59,7 +59,7 @@ export default function Home() {
     );
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black">
       <section className="relative min-h-[80vh] flex items-center overflow-hidden px-6 pt-40 pb-20">
         <div className="absolute inset-0 z-0">
           <img
@@ -71,7 +71,7 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto w-full">
-          <span className="inline-block bg-green-500/10 text-green-400 text-[10px] font-black px-4 py-1.5 rounded-full border border-green-500/20 uppercase tracking-[0.2em] mb-8">
+          <span className="inline-block bg-[#2ecc71]/10 text-[#2ecc71] text-[10px] font-black px-4 py-1.5 rounded-full border border-[#2ecc71]/20 uppercase tracking-[0.2em] mb-8">
             • Plateforme EventSync
           </span>
 
@@ -103,7 +103,7 @@ export default function Home() {
               <span className="text-[#2ecc71] font-black text-[10px] uppercase tracking-[0.3em] block mb-2">
                 Catalogue
               </span>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-black">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-white">
                 Tous les événements
               </h2>
               <p className="text-gray-400 text-sm mt-2">
@@ -111,15 +111,15 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="flex bg-gray-100 p-1.5 rounded-2xl">
+            <div className="flex bg-white/5 backdrop-blur p-1.5 rounded-2xl border border-white/10">
               {["Tous", "À venir", "Passés"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveCategory(tab)}
-                  className={`px-6 py-2.5 rounded-xl text-[11px] font-black uppercase ${
+                  className={`px-6 py-2.5 rounded-xl text-[11px] font-black uppercase transition ${
                     activeCategory === tab
-                      ? "bg-white text-black shadow-sm"
-                      : "text-gray-400"
+                      ? "bg-[#2ecc71] text-black"
+                      : "text-gray-400 hover:text-white"
                   }`}
                 >
                   {tab}
@@ -132,10 +132,10 @@ export default function Home() {
             {filteredEvents.map((event) => (
               <div
                 key={event.id}
-                className="bg-white rounded-[32px] overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full"
+                className="bg-white/5 backdrop-blur border border-white/10 rounded-[32px] overflow-hidden flex flex-col h-full hover:scale-[1.02] transition"
               >
                 <div className="relative h-72 overflow-hidden">
-                  <div className="absolute top-6 left-6 z-10 bg-black/30 text-white text-[10px] font-black px-4 py-2 rounded-full uppercase">
+                  <div className="absolute top-6 left-6 z-10 bg-[#2ecc71] text-black text-[10px] font-black px-4 py-2 rounded-full uppercase">
                     {new Date(event.startDate).toLocaleDateString()}
                   </div>
 
@@ -148,34 +148,34 @@ export default function Home() {
                     alt={event.title}
                   />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
 
                   <div className="absolute bottom-8 left-8">
-                    <h3 className="text-3xl font-black text-white">
+                    <h3 className="text-2xl font-black text-white">
                       {event.title}
                     </h3>
                   </div>
                 </div>
 
-                <div className="p-10 flex flex-col flex-1">
-                  <div className="flex items-center gap-2 text-gray-400 mb-6 text-xs uppercase">
+                <div className="p-8 flex flex-col flex-1">
+                  <div className="flex items-center gap-2 text-gray-400 mb-4 text-xs uppercase">
                     <MapPin className="w-4 h-4 text-[#2ecc71]" />
                     <span>{event.location}</span>
                   </div>
 
-                  <p className="text-gray-500 text-sm mb-8 line-clamp-2">
+                  <p className="text-gray-300 text-sm mb-6 line-clamp-2">
                     {event.description}
                   </p>
 
-                  <div className="mt-auto pt-8 border-t flex items-center justify-between">
-                    <span className="text-[10px] font-black text-gray-300 uppercase flex items-center gap-2">
-                      <LayoutGrid className="w-3.5 h-3.5 text-[#2ecc71]/40" />
+                  <div className="mt-auto pt-6 border-t border-white/10 flex items-center justify-between">
+                    <span className="text-[10px] font-black text-gray-400 uppercase flex items-center gap-2">
+                      <LayoutGrid className="w-3.5 h-3.5 text-[#2ecc71]/50" />
                       {event._count?.sessions || 0} SESSIONS
                     </span>
 
                     <Link
                       href={`/events/${event.id}`}
-                      className="text-[#2ecc71] font-black flex items-center gap-2 uppercase text-[10px]"
+                      className="text-[#2ecc71] font-black flex items-center gap-2 uppercase text-[10px] hover:gap-3 transition-all"
                     >
                       Programme <ArrowRight className="w-4 h-4" />
                     </Link>
