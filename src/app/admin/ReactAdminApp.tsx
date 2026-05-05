@@ -14,10 +14,10 @@ const EventList = () => (
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="title" />
-      <TextField source="description" />
       <TextField source="location" />
       <TextField source="startDate" />
       <TextField source="endDate" />
+      <TextField source="imageUrl" />
     </Datagrid>
   </List>
 );
@@ -28,6 +28,7 @@ const EventCreate = () => (
       <TextInput source="title" />
       <TextInput source="description" />
       <TextInput source="location" />
+      <TextInput source="imageUrl" />
       <DateTimeInput source="startDate" />
       <DateTimeInput source="endDate" />
     </SimpleForm>
@@ -40,6 +41,7 @@ const EventEdit = () => (
       <TextInput source="title" />
       <TextInput source="description" />
       <TextInput source="location" />
+      <TextInput source="imageUrl" />
       <DateTimeInput source="startDate" />
       <DateTimeInput source="endDate" />
     </SimpleForm>
@@ -140,6 +142,31 @@ const SpeakerEdit = () => (
 );
 
 
+const RoomList = () => (
+  <List>
+    <Datagrid rowClick="edit">
+      <TextField source="id" />
+      <TextField source="name" />
+    </Datagrid>
+  </List>
+);
+
+const RoomCreate = () => (
+  <Create>
+    <SimpleForm>
+      <TextInput source="name" />
+    </SimpleForm>
+  </Create>
+);
+
+const RoomEdit = () => (
+  <Edit>
+    <SimpleForm>
+      <TextInput source="name" />
+    </SimpleForm>
+  </Edit>
+);
+
 const QuestionList = () => (
   <List>
     <Datagrid>
@@ -158,6 +185,7 @@ export default function ReactAdminApp() {
       <Resource name="events" list={EventList} create={EventCreate} edit={EventEdit} />
       <Resource name="sessions" list={SessionList} create={SessionCreate} edit={SessionEdit} />
       <Resource name="speakers" list={SpeakerList} create={SpeakerCreate} edit={SpeakerEdit} />
+      <Resource name="rooms" list={RoomList} create={RoomCreate} edit={RoomEdit} />
       <Resource name="questions" list={QuestionList} />
     </Admin>
   );
