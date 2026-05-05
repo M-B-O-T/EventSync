@@ -117,7 +117,7 @@ async function main() {
   });
 
   const now = new Date();
-  const startTimeLive = new Date("2026-05-05T10:00:00Z"); // Adjusted to be "live" during demo if current time is around midday
+  const startTimeLive = new Date("2026-05-05T10:00:00Z");
   const endTimeLive = new Date("2026-05-05T18:00:00Z");
 
   const sLive = await prisma.session.create({
@@ -146,7 +146,6 @@ async function main() {
     },
   });
 
-  console.log("💬 Ajout des questions et votes...");
   const q1 = await prisma.question.create({
     data: {
       content: "Peut-on poser des questions sans être connecté ?",
