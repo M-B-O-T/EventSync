@@ -20,3 +20,25 @@ export async function GET() {
     },
   });
 }
+
+
+export async function POST(req: Request) {
+  const { title, description, location, startDate, endDate, imageUrl } = await req.json();
+
+  const event = await prisma.event.create({
+    data: {
+      title,
+      description,
+      location,
+      imageUrl,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+    },
+  });
+
+  return new Response(JSON.stringify(event), {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
