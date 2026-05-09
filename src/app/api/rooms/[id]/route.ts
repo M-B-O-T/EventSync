@@ -16,3 +16,19 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   });
 }
 
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
+  const { name } = await req.json();
+
+  const room = await prisma.room.update({
+    where: { id: params.id },
+    data: { name },
+  });
+
+  return new Response(JSON.stringify(room), {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+
