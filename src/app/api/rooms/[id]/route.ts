@@ -31,4 +31,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   });
 }
 
-
+export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+  await prisma.room.delete({ where: { id: params.id } });
+  return new Response(null, { status: 204 });
+}
