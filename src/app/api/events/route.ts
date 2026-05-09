@@ -10,17 +10,19 @@ export async function GET() {
         },
       },
     },
+    orderBy: {
+      startDate: "asc",
+    },
   });
 
   return new Response(JSON.stringify(events), {
     headers: {
       "Content-Type": "application/json",
-      "Content-Range": `events 0-${events.length - 1}/${events.length}`,
+      "Content-Range": events 0-${events.length - 1}/${events.length},
       "Access-Control-Expose-Headers": "Content-Range",
     },
   });
 }
-
 
 export async function POST(req: Request) {
   const { title, description, location, startDate, endDate, imageUrl } = await req.json();
