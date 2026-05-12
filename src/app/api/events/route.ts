@@ -22,6 +22,8 @@ export async function GET() {
     "Access-Control-Expose-Headers": "Content-Range",
   },
 });
+}
+
 export async function POST(req: Request) {
   const { title, description, location, startDate, endDate, imageUrl } = await req.json();
 
