@@ -6,7 +6,7 @@ export async function GET() {
   return new Response(JSON.stringify(speakers), {
     headers: {
       "Content-Type": "application/json",
-      "Content-Range": speakers 0-${speakers.length - 1}/${speakers.length},
+      "Content-Range": `speakers 0-${speakers.length - 1}/${speakers.length}`,
       "Access-Control-Expose-Headers": "Content-Range",
     },
   });
