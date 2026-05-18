@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThumbsUp, Send } from "lucide-react";
 import { submitQuestion, upvoteQuestion } from "@/lib/actions";
 
@@ -29,14 +29,29 @@ export default function QuestionList({
   const [author, setAuthor] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [votedIds, setVotedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    const voted = questions
+      .filter((q) => localStorage.getItem(`vote-${q.id}`))
+      .map((q) => q.id);
+
+    setVotedIds(voted);
+  }, [questions]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newQuestion.trim()) return;
 
     setSubmitting(true);
+
     try {
-      await submitQuestion(sessionId, newQuestion, isAnonymous ? null : author);
+      await submitQuestion(
+        sessionId,
+        newQuestion,
+        isAnonymous ? null : author
+      );
+
       setNewQuestion("");
       setAuthor("");
       if (onQuestionAdded) onQuestionAdded();
@@ -48,15 +63,25 @@ export default function QuestionList({
   };
 
   const handleUpvote = async (questionId: string) => {
+    const alreadyVoted = localStorage.getItem(`vote-${questionId}`);
+
     try {
-      await upvoteQuestion(questionId, sessionId);
-      if (onQuestionAdded) onQuestionAdded();
-    } catch {}
+      if (alreadyVoted) {
+        await upvoteQuestion(questionId, sessionId, "down");
+        localStorage.removeItem(`vote-${questionId}`);
+        setVotedIds((prev) => prev.filter((id) => id !== questionId));
+      } else {
+        await upvoteQuestion(questionId, sessionId, "up");
+        localStorage.setItem(`vote-${questionId}`, "true");
+        setVotedIds((prev) => [...prev, questionId]);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
     <div className="space-y-10">
-
       {isLive && (
         <div className="bg-white/5 border border-white/10 backdrop-blur rounded-[28px] p-6">
           <h4 className="text-white font-black uppercase tracking-[0.2em] mb-6 text-sm">
@@ -120,37 +145,48 @@ export default function QuestionList({
           </p>
         )}
 
-        {questions.map((question) => (
-          <div
-            key={question.id}
-            className="bg-white/5 border border-white/10 rounded-[24px] p-5 backdrop-blur"
-          >
-            <div className="flex justify-between gap-4">
-              <div className="flex-1">
-                <p className="text-white">{question.content}</p>
+        {questions.map((question) => {
+          const voted = votedIds.includes(question.id);
 
-                <div className="flex items-center gap-3 mt-3 text-xs uppercase tracking-[0.2em] text-gray-500">
-                  <span>{question.author || "Anonyme"}</span>
-                  <span>•</span>
-                  <span>
-                    {new Date(question.createdAt).toLocaleTimeString("fr-FR", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
+          return (
+            <div
+              key={question.id}
+              className="bg-white/5 border border-white/10 rounded-[24px] p-5 backdrop-blur"
+            >
+              <div className="flex justify-between gap-4">
+                <div className="flex-1">
+                  <p className="text-white">{question.content}</p>
+
+                  <div className="flex items-center gap-3 mt-3 text-xs uppercase tracking-[0.2em] text-gray-500">
+                    <span>{question.author || "Anonyme"}</span>
+                    <span>•</span>
+                    <span>
+                      {new Date(question.createdAt).toLocaleTimeString(
+                        "fr-FR",
+                        {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }
+                      )}
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              <button
-                onClick={() => handleUpvote(question.id)}
-                className="flex items-center gap-2 px-3 py-2 bg-white/10 text-white rounded-xl hover:bg-white/20 transition"
-              >
-                <ThumbsUp className="w-4 h-4 text-[#2ecc71]" />
-                <span className="font-black">{question.votes}</span>
-              </button>
+                <button
+                  onClick={() => handleUpvote(question.id)}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl transition ${
+                    voted
+                      ? "bg-green-500/20 text-green-400"
+                      : "bg-white/10 text-white hover:bg-white/20"
+                  }`}
+                >
+                  <ThumbsUp className="w-4 h-4 text-[#2ecc71]" />
+                  <span className="font-black">{question.votes}</span>
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
