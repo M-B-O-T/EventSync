@@ -7,20 +7,28 @@ export default function FavoriteButton({ sessionId }: { sessionId: string }) {
   const [isFav, setIsFav] = useState(false);
 
   useEffect(() => {
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-    setIsFav(favorites.includes(sessionId));
+    try {
+      const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+      setIsFav(Array.isArray(favorites) && favorites.includes(sessionId));
+    } catch (e) {
+      console.error("Error loading favorites from localStorage:", e);
+    }
   }, [sessionId]);
 
   const toggleFavorite = () => {
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-    let updated;
-    if (favorites.includes(sessionId)) {
-      updated = favorites.filter((id: string) => id !== sessionId);
-    } else {
-      updated = [...favorites, sessionId];
+    try {
+      const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+      let updated;
+      if (Array.isArray(favorites) && favorites.includes(sessionId)) {
+        updated = favorites.filter((id: string) => id !== sessionId);
+      } else {
+        updated = [...(Array.isArray(favorites) ? favorites : []), sessionId];
+      }
+      localStorage.setItem("favorites", JSON.stringify(updated));
+      setIsFav(!isFav);
+    } catch (e) {
+      console.error("Error toggling favorite:", e);
     }
-    localStorage.setItem("favorites", JSON.stringify(updated));
-    setIsFav(!isFav);
   };
 
   return (

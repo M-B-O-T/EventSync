@@ -3,6 +3,7 @@ import { Clock, MapPin, Users, ArrowLeft, Star } from "lucide-react";
 import Link from "next/link";
 import QuestionList from "@/components/QuestionList";
 import { notFound } from "next/navigation";
+import FavoriteButton from "./FavoriteButton";
 
 export const revalidate = 60;
 export default async function SessionPage({
@@ -70,9 +71,7 @@ export default async function SessionPage({
                 {session.title}
               </h1>
             </div>
-
-            {/* Favorite button (handled via Client Component or just logic if we want) */}
-            {/* For now keeping it simple or I can add a small Client Component wrapper for the button */}
+            
             <FavoriteButton sessionId={session.id} />
           </div>
 
@@ -146,5 +145,3 @@ export default async function SessionPage({
     </div>
   );
 }
-
-import FavoriteButton from "./FavoriteButton";

@@ -19,18 +19,31 @@ export default function FavoritesPage() {
 
   useEffect(() => {
     const fetchFavorites = async () => {
-      const storedIds = JSON.parse(localStorage.getItem("favorites") || "[]");
-      if (storedIds.length === 0) {
+      let storedIds = [];
+      try {
+        storedIds = JSON.parse(localStorage.getItem("favorites") || "[]");
+      } catch (e) {
+        console.error("Error parsing favorites from localStorage:", e);
+      }
+
+      if (!Array.isArray(storedIds) || storedIds.length === 0) {
         setLoading(false);
         return;
       }
 
       try {
-        const promises = storedIds.map((id: string) =>
-          fetch(`/api/sessions/${id}`).then((res) => res.json())
-        );
+        const promises = storedIds.map(async (id: string) => {
+          try {
+            const res = await fetch(`/api/sessions/${id}`);
+            if (!res.ok) return null;
+            return await res.json();
+          } catch (error) {
+            console.error(`Error fetching session ${id}:`, error);
+            return null;
+          }
+        });
         const data = await Promise.all(promises);
-        setFavorites(data.filter((s) => !s.error));
+        setFavorites(data.filter((s): s is Session => s !== null && !s.error));
       } catch (error) {
         console.error("Error fetching favorites:", error);
       } finally {
