@@ -182,7 +182,7 @@ const QuestionList = () => (
 
 export default function ReactAdminApp() {
   return (
-    <Admin dataProvider={dataProvider} authProvider={authProvider}>
+    <Admin dataProvider={dataProvider} authProvider={authProvider} loginPage={() => null}>
       <Resource name="events" list={EventList} create={EventCreate} edit={EventEdit} />
       <Resource name="sessions" list={SessionList} create={SessionCreate} edit={SessionEdit} />
       <Resource name="speakers" list={SpeakerList} create={SpeakerCreate} edit={SpeakerEdit} />

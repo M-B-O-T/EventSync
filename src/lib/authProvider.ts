@@ -13,10 +13,12 @@ const authProvider = {
     }
 
     localStorage.setItem("token", data.token);
+    return Promise.resolve();
   },
 
   logout: () => {
     localStorage.removeItem("token");
+    window.location.href = "/";
     return Promise.resolve();
   },
 
