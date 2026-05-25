@@ -1,13 +1,12 @@
 "use client";
 
 import {Admin,Resource,List,Datagrid,TextField,NumberField,Create,SimpleForm,TextInput,DateTimeInput,
-  Edit,ReferenceInput,SelectInput,ReferenceArrayInput, SelectArrayInput} from "react-admin";
+  Edit,ReferenceInput,SelectInput,ReferenceArrayInput, SelectArrayInput, DeleteButton} from "react-admin";
 
 import simpleRestProvider from "ra-data-simple-rest";
 import authProvider from "@/lib/authProvider";
 
 const dataProvider = simpleRestProvider("/api");
-
 
 const EventList = () => (
   <List>
@@ -18,6 +17,7 @@ const EventList = () => (
       <TextField source="startDate" />
       <TextField source="endDate" />
       <TextField source="imageUrl" />
+      <DeleteButton />
     </Datagrid>
   </List>
 );
@@ -48,7 +48,6 @@ const EventEdit = () => (
   </Edit>
 );
 
-
 const SessionList = () => (
   <List>
     <Datagrid rowClick="edit">
@@ -59,6 +58,7 @@ const SessionList = () => (
       <TextField source="endTime" />
       <TextField source="event.title" />
       <TextField source="room.name" />
+      <DeleteButton />
     </Datagrid>
   </List>
 );
@@ -109,7 +109,6 @@ const SessionEdit = () => (
   </Edit>
 );
 
-
 const SpeakerList = () => (
   <List>
     <Datagrid rowClick="edit">
@@ -117,6 +116,7 @@ const SpeakerList = () => (
       <TextField source="name" />
       <TextField source="bio" />
       <TextField source="photoUrl" />
+      <DeleteButton />
     </Datagrid>
   </List>
 );
@@ -141,12 +141,12 @@ const SpeakerEdit = () => (
   </Edit>
 );
 
-
 const RoomList = () => (
   <List>
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="name" />
+      <DeleteButton />
     </Datagrid>
   </List>
 );
@@ -169,12 +169,13 @@ const RoomEdit = () => (
 
 const QuestionList = () => (
   <List>
-    <Datagrid>
+    <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="content" />
       <TextField source="author" />
       <NumberField source="votes" />
       <TextField source="sessionId" />
+      <DeleteButton />
     </Datagrid>
   </List>
 );
