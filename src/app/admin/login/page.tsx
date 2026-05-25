@@ -120,13 +120,6 @@ export default function LoginPage() {
             </button>
 
           </form>
-
-          <div className="mt-8 text-center">
-            <Link href="/admin/register" className="text-[#2ecc71] text-sm">
-              Créer un compte
-            </Link>
-          </div>
-
         </div>
       </div>
     </div>

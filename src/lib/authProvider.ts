@@ -13,17 +13,24 @@ const authProvider = {
     }
 
     localStorage.setItem("token", data.token);
+    return Promise.resolve();
   },
 
   logout: () => {
     localStorage.removeItem("token");
+    window.location.replace("/admin/login");
     return Promise.resolve();
   },
 
   checkAuth: () => {
-    return localStorage.getItem("token")
-      ? Promise.resolve()
-      : Promise.reject();
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      window.location.replace("/admin/login");
+      return Promise.reject();
+    }
+
+    return Promise.resolve();
   },
 
   checkError: () => Promise.resolve(),
