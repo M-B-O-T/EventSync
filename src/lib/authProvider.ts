@@ -18,7 +18,6 @@ const authProvider = {
 
   logout: () => {
     localStorage.removeItem("token");
-    window.location.href = "/";
     return Promise.resolve();
   },
 
