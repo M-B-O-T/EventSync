@@ -1,17 +1,15 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
+import { getSession } from "@/lib/data";
 
 export async function submitQuestion(
   sessionId: string,
   content: string,
   author: string | null
 ) {
-  const session = await prisma.session.findUnique({
-    where: { id: sessionId },
-  });
-
+  const session = await getSession(sessionId);
   if (!session) throw new Error("Session not found");
 
   const now = new Date();
@@ -29,9 +27,7 @@ export async function submitQuestion(
       sessionId,
     },
   });
-
-  revalidatePath(`/sessions/${sessionId}`);
-  revalidatePath(`/events/${session.eventId}`);
+  revalidateTag(`questions-session-${sessionId}`, "max");
 }
 
 export async function upvoteQuestion(
@@ -39,23 +35,13 @@ export async function upvoteQuestion(
   sessionId: string,
   action: "up" | "down"
 ) {
-  const question = await prisma.question.findUnique({
-    where: { id: questionId },
-  });
-
-  if (!question) throw new Error("Question not found");
-
-  const newVotes =
-    action === "up"
-      ? question.votes + 1
-      : Math.max(0, question.votes - 1);
-
   await prisma.question.update({
     where: { id: questionId },
     data: {
-      votes: newVotes,
+      votes: {
+        increment: action === "up" ? 1 : -1,
+      },
     },
   });
-
-  revalidatePath(`/sessions/${sessionId}`);
+  revalidateTag(`questions-session-${sessionId}`, "max");
 }
