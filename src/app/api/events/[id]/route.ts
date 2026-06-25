@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
 
 export async function GET(
   _req: Request,
@@ -12,11 +13,7 @@ export async function GET(
       sessions: {
         include: {
           room: true,
-          speakers: {
-            include: {
-              speaker: true,
-            },
-          },
+          speakers: { include: { speaker: true } },
           questions: true,
         },
         orderBy: { startTime: "asc" },
@@ -25,17 +22,10 @@ export async function GET(
   });
 
   if (!event) {
-    return new Response(JSON.stringify({ error: "Event not found" }), {
-      status: 404,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }
 
-  return new Response(JSON.stringify(event), {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return NextResponse.json(event);
 }
 
 export async function PUT(
@@ -43,27 +33,21 @@ export async function PUT(
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params;
-
-  const { title, description, location, startDate, endDate, imageUrl } =
-    await req.json();
+  const body = await req.json();
 
   const event = await prisma.event.update({
     where: { id },
     data: {
-      title,
-      description,
-      location,
-      imageUrl,
-      startDate: new Date(startDate),
-      endDate: new Date(endDate),
+      title: body.title,
+      description: body.description,
+      location: body.location,
+      imageUrl: body.imageUrl,
+      startDate: new Date(body.startDate),
+      endDate: new Date(body.endDate),
     },
   });
 
-  return new Response(JSON.stringify(event), {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return NextResponse.json(event);
 }
 
 export async function DELETE(
@@ -72,7 +56,9 @@ export async function DELETE(
 ) {
   const { id } = await context.params;
 
-  await prisma.event.delete({ where: { id } });
+  await prisma.event.deleteMany({
+    where: { id },
+  });
 
-  return new Response(null, { status: 204 });
+  return NextResponse.json({ data: { id } });
 }

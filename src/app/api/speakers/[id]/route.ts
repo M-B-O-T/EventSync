@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
 
 export async function GET(
   _req: Request,
@@ -65,7 +66,13 @@ export async function DELETE(
 ) {
   const { id } = await params;
 
-  await prisma.speaker.delete({ where: { id } });
+  await prisma.speakerSession.deleteMany({
+    where: { speakerId: id },
+  });
 
-  return new Response(null, { status: 204 });
+  await prisma.speaker.deleteMany({
+    where: { id },
+  });
+
+  return NextResponse.json({ success: true });
 }
