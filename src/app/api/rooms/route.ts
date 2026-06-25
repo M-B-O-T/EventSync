@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { getUserFromRequest } from "@/lib/auth";
 
 export async function GET() {
   const rooms = await prisma.room.findMany({
@@ -17,15 +19,17 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const user = getUserFromRequest(req);
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { name } = await req.json();
 
   const room = await prisma.room.create({
     data: { name },
   });
 
-  return new Response(JSON.stringify(room), {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return NextResponse.json(room);
 }

@@ -1,4 +1,6 @@
 ﻿import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { getUserFromRequest } from "@/lib/auth";
 
 export async function GET() {
   const events = await prisma.event.findMany({
@@ -25,7 +27,14 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const { title, description, location, startDate, endDate, imageUrl } = await req.json();
+  const user = getUserFromRequest(req);
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { title, description, location, startDate, endDate, imageUrl } =
+    await req.json();
 
   const event = await prisma.event.create({
     data: {
@@ -38,9 +47,5 @@ export async function POST(req: Request) {
     },
   });
 
-  return new Response(JSON.stringify(event), {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return NextResponse.json(event);
 }

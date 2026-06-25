@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { getUserFromRequest } from "@/lib/auth";
 
 export async function GET(
   _req: Request,
@@ -41,6 +42,12 @@ export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const user = getUserFromRequest(req);
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { id } = await params;
   const { name, photoUrl, bio } = await req.json();
 
@@ -53,17 +60,19 @@ export async function PUT(
     },
   });
 
-  return new Response(JSON.stringify(speaker), {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return NextResponse.json(speaker);
 }
 
 export async function DELETE(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const user = getUserFromRequest(req);
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { id } = await params;
 
   await prisma.speakerSession.deleteMany({

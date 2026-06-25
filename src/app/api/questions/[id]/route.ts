@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { getUserFromRequest } from "@/lib/auth";
 
 export async function GET(
   _req: Request,
@@ -21,14 +23,20 @@ export async function GET(
 }
 
 export async function DELETE(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const user = getUserFromRequest(req);
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { id } = await params;
 
   await prisma.question.delete({
     where: { id },
   });
 
-  return new Response(null, { status: 204 });
+  return new NextResponse(null, { status: 204 });
 }

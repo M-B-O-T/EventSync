@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { signToken } from "@/lib/jwt";
 
 export async function POST(req: Request) {
   try {
@@ -24,11 +24,10 @@ export async function POST(req: Request) {
       return Response.json({ error: "Invalid password" }, { status: 401 });
     }
 
-    const token = jwt.sign(
-      { id: admin.id, email: admin.email },
-      process.env.JWT_SECRET || "secret",
-      { expiresIn: "1d" }
-    );
+    const token = signToken({
+      id: admin.id,
+      email: admin.email,
+    });
 
     return Response.json({
       token,

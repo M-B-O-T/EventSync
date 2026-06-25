@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { getUserFromRequest } from "@/lib/auth";
 
 type SpeakerInput = string | { speakerId: string };
 
@@ -34,6 +35,12 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const user = getUserFromRequest(request);
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { id } = await params;
   const body = await request.json();
 
@@ -87,9 +94,15 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const user = getUserFromRequest(request);
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { id } = await params;
 
   try {
@@ -102,7 +115,7 @@ export async function DELETE(
     });
 
     return NextResponse.json({ success: true });
-  } catch (e) {
-    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: "Delete failed" }, { status: 400 });
   }
 }

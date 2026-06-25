@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { getUserFromRequest } from "@/lib/auth";
 
 export async function GET(
   _req: Request,
@@ -28,6 +30,12 @@ export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const user = getUserFromRequest(req);
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { id } = await params;
   const { name } = await req.json();
 
@@ -36,27 +44,24 @@ export async function PUT(
     data: { name },
   });
 
-  return new Response(JSON.stringify(room), {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return NextResponse.json(room);
 }
 
 export async function DELETE(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const user = getUserFromRequest(req);
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { id } = await params;
 
   const deleted = await prisma.room.deleteMany({
     where: { id },
   });
 
-  return new Response(JSON.stringify({ deleted: deleted.count }), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return NextResponse.json({ deleted: deleted.count });
 }
