@@ -8,6 +8,7 @@ export async function GET() {
       author: true,
       votes: true,
       sessionId: true,
+      createdAt: true,
       session: {
         select: {
           id: true,
