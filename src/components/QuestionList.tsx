@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ThumbsUp, Send } from "lucide-react";
 import { submitQuestion, upvoteQuestion } from "@/lib/actions";
+import { useRouter } from "next/navigation";
 
 interface Question {
   id: string;
@@ -25,16 +26,23 @@ export default function QuestionList({
   isLive,
   onQuestionAdded,
 }: QuestionListProps) {
+  const router = useRouter();
+
   const [newQuestion, setNewQuestion] = useState("");
   const [author, setAuthor] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [votedIds, setVotedIds] = useState<string[]>([]);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
 
   useEffect(() => {
-    const voted = questions
-      .filter((q) => localStorage.getItem(`vote-${q.id}`))
-      .map((q) => q.id);
+    const voted: string[] = [];
+
+    for (const q of questions) {
+      if (localStorage.getItem(`vote-${q.id}`)) {
+        voted.push(q.id);
+      }
+    }
 
     setVotedIds(voted);
   }, [questions]);
@@ -54,15 +62,20 @@ export default function QuestionList({
 
       setNewQuestion("");
       setAuthor("");
+
       if (onQuestionAdded) onQuestionAdded();
-    } catch (err: any) {
-      alert(err.message);
+
+      router.refresh();
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleUpvote = async (questionId: string) => {
+    if (loadingId) return;
+
+    setLoadingId(questionId);
+
     const alreadyVoted = localStorage.getItem(`vote-${questionId}`);
 
     try {
@@ -75,8 +88,10 @@ export default function QuestionList({
         localStorage.setItem(`vote-${questionId}`, "true");
         setVotedIds((prev) => [...prev, questionId]);
       }
-    } catch (e) {
-      console.error(e);
+
+      router.refresh();
+    } finally {
+      setLoadingId(null);
     }
   };
 
@@ -174,11 +189,12 @@ export default function QuestionList({
 
                 <button
                   onClick={() => handleUpvote(question.id)}
+                  disabled={loadingId === question.id}
                   className={`flex items-center gap-2 px-3 py-2 rounded-xl transition ${
                     voted
                       ? "bg-green-500/20 text-green-400"
                       : "bg-white/10 text-white hover:bg-white/20"
-                  }`}
+                  } ${loadingId === question.id ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   <ThumbsUp className="w-4 h-4 text-[#2ecc71]" />
                   <span className="font-black">{question.votes}</span>
