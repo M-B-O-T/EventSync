@@ -49,24 +49,14 @@ export async function DELETE(
 ) {
   const { id } = await params;
 
-  const sessions = await prisma.session.findMany({
-    where: { roomId: id },
-    select: { id: true },
-  });
-
-  if (sessions.length > 0) {
-    return new Response(
-      JSON.stringify({ error: "Room is used by sessions" }),
-      {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-  }
-
-  await prisma.room.delete({
+  const deleted = await prisma.room.deleteMany({
     where: { id },
   });
 
-  return new Response(null, { status: 204 });
+  return new Response(JSON.stringify({ deleted: deleted.count }), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
