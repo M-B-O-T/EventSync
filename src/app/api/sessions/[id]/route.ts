@@ -110,7 +110,7 @@ export async function DELETE(
       where: { sessionId: id },
     });
 
-    await prisma.session.delete({
+    await prisma.session.deleteMany({
       where: { id },
     });
 

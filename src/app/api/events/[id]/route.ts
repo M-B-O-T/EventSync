@@ -69,7 +69,7 @@ export async function DELETE(
 
   const { id } = await context.params;
 
-  await prisma.event.delete({
+  await prisma.event.deleteMany({
     where: { id },
   });
 

@@ -34,9 +34,9 @@ export async function DELETE(
 
   const { id } = await params;
 
-  await prisma.question.delete({
+  await prisma.question.deleteMany({
     where: { id },
   });
 
-  return new NextResponse(null, { status: 204 });
+  return NextResponse.json({ success: true, id });
 }
