@@ -38,6 +38,13 @@ export default function Navbar() {
         >
           Mes Favoris
         </Link>
+
+        <Link
+            href="/speakers"
+            className="text-gray-400 hover:text-[#2ecc71] text-[10px] font-black uppercase tracking-[0.2em] transition-colors"
+          >
+          Intervenants
+          </Link>
       </div>
 
       <div className="flex items-center gap-4">
@@ -50,7 +57,7 @@ export default function Navbar() {
           </Link>
         ) : (
           <Link
-            href="/admin/login"
+            href="http://localhost:5173/#/login"
             className="group flex items-center gap-2 bg-white/5 hover:bg-[#2ecc71] text-white hover:text-black px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border border-white/10"
           >
             <User className="w-3 h-3" />

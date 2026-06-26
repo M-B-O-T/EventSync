@@ -3,8 +3,7 @@ import { Calendar, Clock, MapPin, Users, User, Star, LayoutGrid, ArrowRight } fr
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export const revalidate = 60; // Revalidate every minute to update "Live" status
-
+export const revalidate = 60; 
 export default async function EventDetail({
   params,
 }: {
