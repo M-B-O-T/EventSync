@@ -1,4 +1,5 @@
 {
+  "$schema": "./.vscode/tsconfig.schema.json",
   "compilerOptions": {
     "baseUrl": ".",
     "target": "ES2017",
@@ -14,6 +15,7 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    "ignoreDeprecations": "6.0",
     "plugins": [
       {
         "name": "next"
