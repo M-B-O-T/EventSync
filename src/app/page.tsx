@@ -63,11 +63,11 @@ export default function Home() {
       <section className="relative min-h-[80vh] flex items-center overflow-hidden px-6 pt-40 pb-20">
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012&auto=format&fit=crop"
+            src="/images/hero-background.jpg"
             className="w-full h-full object-cover opacity-50"
             alt="Hero Background"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-r from-black via-black/60 to-transparent"></div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto w-full">
@@ -132,7 +132,7 @@ export default function Home() {
             {filteredEvents.map((event) => (
               <div
                 key={event.id}
-                className="bg-white/5 backdrop-blur border border-white/10 rounded-[32px] overflow-hidden flex flex-col h-full hover:scale-[1.02] transition"
+                className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl overflow-hidden flex flex-col h-full hover:scale-[1.02] transition"
               >
                 <div className="relative h-72 overflow-hidden">
                   <div className="absolute top-6 left-6 z-10 bg-[#2ecc71] text-black text-[10px] font-black px-4 py-2 rounded-full uppercase">
@@ -142,13 +142,13 @@ export default function Home() {
                   <img
                     src={
                       event.imageUrl ||
-                      "https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?q=80&w=2070"
+                      "/images/event-fallback.jpg"
                     }
                     className="w-full h-full object-cover"
                     alt={event.title}
                   />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-r from-black via-black/60 to-transparent"></div>
 
                   <div className="absolute bottom-8 left-8">
                     <h3 className="text-2xl font-black text-white">
